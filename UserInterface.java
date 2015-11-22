@@ -9,13 +9,15 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 
 public class UserInterface {
-	private String readables[];
-	private String audioProducts[];
 	private String users[];
 	private String Books[];
-	private String eBooks[];
+	private String EBooks[];
 	private String CD[];
 	private String MP3[];
+	private Book book[];
+	private eBook eBook[];
+	private CD cd[];
+	private MP3 mp3[];
 	private int currentPage;
 	private User user;
 	private Scanner reader = new Scanner(System.in);
@@ -42,9 +44,25 @@ public class UserInterface {
 	{
 		readFiles("Users.txt", users);
 		readFiles("Books.txt", Books);
-		readFiles("Ebooks.txt", eBooks);
+		readFiles("Ebooks.txt", EBooks);
 		readFiles("CD.txt", CD);
 		readFiles("MP3.txt", MP3);
+		for (int i = 0; i<Books.length; i++)
+		{
+			book[i].setParam(Books[i]);
+		}
+		for (int i = 0; i < EBooks.length; i++)
+		{
+			eBook[i].setParam(EBooks[i]);
+		}
+		for (int i = 0; i < CD.length; i++)
+		{
+			cd[i].setParam(CD[i]);
+		}
+		for (int i = 0; i< MP3.length; i++)
+		{
+			mp3[i].setParam(MP3[i]);
+		}
 	}
 	
 	public void logIn()
@@ -149,13 +167,13 @@ public class UserInterface {
 	public void showReadables()
 	{
 		System.out.print("S.No   Name of Book       Author         Price($)       Quantity in Store    Type");
-		for(int i = 0; i < Books.length; i++)
+		for(int i = 0; i < book.length; i++)
 		{
-			System.out.print(Books[i]);
+			System.out.print(book[i].getInfo() + "       Book");
 		}
-		for(int i = 0; i< eBooks.length; i++)
+		for(int i = 0; i< eBook.length; i++)
 		{
-			System.out.print(eBooks[i]);
+			System.out.print(eBook[i].getInfo() + "      eBook");
 		}
 		System.out.print("Choose your option: ");
 		int userInput = reader.nextInt();
@@ -163,10 +181,36 @@ public class UserInterface {
 		
 		for(int i = 0; i<items.length;i++)
 		{
-			if (userInput == items[i].sNo)
+			if (userInput == book[i].sNo)
 			{
-				System.out.print("Item added to shopping cart");
-				//add to shopping cart function
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded < book[i].quantity)
+				{
+					System.out.print(book[i].name +" added to shopping cart");
+					book[i].changeQuantity(amountAdded);
+					//add to shopping cart function
+				}
+				else
+				{
+					System.out.print("Invalid Number, try again.");
+				}
+				showReadables();
+			}
+			else if (userInput == eBook[i].sNo)
+			{
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded < eBook[i].quantity)
+				{
+					System.out.print(eBook[i].name +" added to shopping cart");
+					eBook[i].changeQuantity(amountAdded);
+					//add to shopping cart function
+				}
+				else
+				{
+					System.out.print("Invalid Number, try again.");
+				}
 				showReadables();
 			}
 			else if (userInput == -1)
@@ -183,24 +227,50 @@ public class UserInterface {
 	public void showAudioProducts()
 	{
 		System.out.print("S.No   Name               Artist         Price($)       Quantity in Store    Type");
-		for(int i = 0; i < CD.length; i++)
+		for(int i = 0; i < cd.length; i++)
 		{
-			System.out.print(CD[i]);
+			System.out.print(cd[i].getInfo() + "       CD");
 		}
-		for(int i = 0; i< MP3.length; i++)
+		for(int i = 0; i< mp3.length; i++)
 		{
-			System.out.print(MP3[i]);
+			System.out.print(mp3[i].getInfo() + "       MP3");
 		}
 		System.out.print("Choose your option: ");
 		int userInput = reader.nextInt();
 		System.out.print("Press -1 to go back");
 		
-		for(int i = 0; i<items.length;i++)
+		for(int i = 0; i<cd.length;i++)
 		{
-			if (userInput == items[i].sNo)
+			if (userInput == cd[i].sNo)
 			{
-				System.out.print("Item added to shopping cart");
-				//add to shopping cart function
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded <cd[i].quantity)
+				{
+					System.out.print(cd[i].name +" added to shopping cart");
+					cd[i].changeQuantity(amountAdded);
+					//add to shopping cart function
+				}
+				else
+				{
+					System.out.print("Invalid Number, try again.");
+				}
+				showAudioProducts();
+			}
+			else if (userInput == mp3[i].sNo)
+			{
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded < mp3[i].quantity)
+				{
+					System.out.print(mp3[i].name +" added to shopping cart");
+					mp3[i].changeQuantity(amountAdded);
+					//add to shopping cart function
+				}
+				else
+				{
+					System.out.print("Invalid Number, try again.");
+				}
 				showAudioProducts();
 			}
 			else if (userInput == -1)
@@ -214,4 +284,6 @@ public class UserInterface {
 			}
 		}
 	}
+	
+	
 }
