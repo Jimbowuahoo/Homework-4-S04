@@ -1,13 +1,13 @@
 package Shopping;
 public abstract class Item {
-	public abstract String getInfo();
-	public abstract int getPrice();
-	public abstract void setParam(String info);
-	public abstract void changeQuantity(int mod);
+	public abstract String getInfo();//get item info
+	public abstract int getPrice();//get item price
+	public abstract void setParam(String info); // set item values
+	public abstract void changeQuantity(int mod); //subtract from stock
 	
-	protected int price;
-	protected int sNo;
-	protected String name;
-	protected int quantity;
+	protected int price;//price
+	protected int sNo;//serial number
+	protected String name;//name
+	protected int quantity;//quantity
 }
 

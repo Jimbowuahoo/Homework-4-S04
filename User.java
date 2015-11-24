@@ -2,8 +2,10 @@ package Shopping;
 import java.util.Scanner;
 
 public class User {
-	private String username;
-	private String password;
+	private String username;//username
+	//private String password;//password should we implement admin
+	
+	//method to get username
 	public String getUsername(Scanner reader){
 		username = reader.next();
 		return username;
