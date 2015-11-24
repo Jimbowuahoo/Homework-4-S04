@@ -5,20 +5,26 @@ import java.io.IOException;
 import java.io.*;
 
 public class UserInterface {
-	private String[] users = new String[20];
-	private String[] Books = new String[20];
-	private String[] EBooks = new String[20];
-	private String[] CD = new String[20];
-	private String[] MP3 = new String[20];
-	private Book[] book = new Book[20];
-	private eBook[] eBook = new eBook[20];
-	private CD[] cd = new CD[20];
+	private String[] users = new String[30];
+	private String[] Books = new String[30];
+	private String[] EBooks = new String[30];
+	private String[] CD = new String[30];
+	private String[] MP3 = new String[30];
+	private Book[] book = new Book[30];
+	private eBook[] eBook = new eBook[30];
+	private CD[] cd = new CD[30];
 	private Book booki = new Book();
-	private MP3[] mp3 = new MP3[20];
+	private MP3[] mp3 = new MP3[30];
 	private int currentPage;
 	private User user = new User();
 	private Scanner reader = new Scanner(System.in);
 	private Item items[];
+	private float subtotal = 0;
+	private float eTax = 0;
+	private float HST = 0;
+	private float Shipping = 0;
+	private ShoppingCart cart = new ShoppingCart();
+	private String username;
 	//need a function to load items into readables and audio
 	
 	public void readFiles(String filename, String[] array)
@@ -73,9 +79,8 @@ public class UserInterface {
 		if (userInput == 1)
 		{
 			System.out.print("Enter your username: ");
-			String username = "hi"; //user.getUsername();
-			String user = reader.next();
-			if(user.equals("jim"))//Arrays.asList(users).contains(username))
+			username = user.getUsername(reader);
+			if(Arrays.asList(users).contains(username))
 			{
 				System.out.print("Hello, " + username + "\n");
 				mainMenu();
@@ -169,11 +174,131 @@ public class UserInterface {
 	}
 	public void getReadables()
 	{
+		System.out.print("\nEnter Command: ");
+		System.out.print("\nPress -1 to go back");
+		int userInput = reader.nextInt();
 		
+		
+		for(int i = 0; i<items.length;i++)
+		{
+			if (userInput == book[i].sNo)
+			{
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded < book[i].quantity)
+				{
+					System.out.print(book[i].name +" added to shopping cart\n");
+					book[i].changeQuantity(amountAdded);
+					cart.addItem();
+					//add to shopping cart function
+					subtotal += amountAdded*book[i].getPrice();
+					eTax += amountAdded*book[i].getPrice()*0.02;
+					Shipping += amountAdded*book[i].getPrice()*0.1;
+					HST += amountAdded*book[i].getPrice()*0.13;
+				}
+				else
+				{
+					System.out.print("Invalid Number, try again.");
+				}
+				showReadables();
+			}
+			else if (userInput == eBook[i].sNo)
+			{
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded < eBook[i].quantity)
+				{
+					System.out.print(eBook[i].name +" added to shopping cart");
+					eBook[i].changeQuantity(amountAdded);
+					cart.addItem();
+					//add to shopping cart function
+					subtotal += amountAdded*book[i].getPrice();
+					HST += amountAdded*book[i].getPrice()*0.13;
+				}
+				else
+				{
+					System.out.print("Invalid Number, try again.");
+				}
+				showReadables();
+			}
+			else if (userInput == 0)
+			{
+				checkOut();
+			}
+			else if (userInput == -1)
+			{
+				categoryMenu();
+			}
+			else
+			{
+				System.out.print("Unsupported input");
+				showReadables();// might need another function for this whole part for ease of use
+			}
+		}
 	}
 	public void getAudio()
 	{
+		System.out.print("\nEnter Command: ");
+		System.out.print("\nPress -1 to go back");
+		int userInput = reader.nextInt();
 		
+		
+		for(int i = 0; i<cd.length;i++)
+		{
+			if (userInput == cd[i].sNo)
+			{
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded <cd[i].quantity)
+				{
+					System.out.print(cd[i].name +" added to shopping cart\n");
+					cd[i].changeQuantity(amountAdded);
+					cart.addItem();
+					//add to shopping cart function
+					subtotal += amountAdded*book[i].getPrice();
+					eTax += amountAdded*book[i].getPrice()*0.02;
+					Shipping += amountAdded*book[i].getPrice()*0.1;
+					HST += amountAdded*book[i].getPrice()*0.13;
+				}
+				else
+				{
+					System.out.print("\nInvalid Number, try again.");
+				}
+				showAudioProducts();
+			}
+			else if (userInput == mp3[i].sNo)
+			{
+				System.out.print("Enter the amount: ");
+				int amountAdded = reader.nextInt();
+				if (amountAdded > 0 && amountAdded < mp3[i].quantity)
+				{
+					System.out.print(mp3[i].name +" added to shopping cart");
+					mp3[i].changeQuantity(amountAdded);
+					cart.addItem();
+					//add to shopping cart function
+					subtotal += amountAdded*book[i].getPrice();
+					HST += amountAdded*book[i].getPrice()*0.13;
+				}
+				else
+				{
+					System.out.print("\nInvalid Number, try again.");
+				}
+				showAudioProducts();
+			}
+			else if (userInput == 0)
+			{
+				checkOut();
+			}
+			else if (userInput == -1)
+			{
+				categoryMenu();
+			}
+			else
+			{
+				System.out.print("\nUnsupported input");
+				showAudioProducts();
+			}
+		}
 	}
 	public void showReadables()
 	{
@@ -192,116 +317,32 @@ public class UserInterface {
 				System.out.print(eBook[i].getInfo() + "       eBook\n");
 			}
 		}
-		System.out.print("\nEnter Command: ");
-		System.out.print("\nPress -1 to go back");
-		int userInput = reader.nextInt();
+		getReadables();
 		
-		
-		for(int i = 0; i<items.length;i++)
-		{
-			if (userInput == book[i].sNo)
-			{
-				System.out.print("Enter the amount: ");
-				int amountAdded = reader.nextInt();
-				if (amountAdded > 0 && amountAdded < book[i].quantity)
-				{
-					System.out.print(book[i].name +" added to shopping cart\n");
-					book[i].changeQuantity(amountAdded);
-					//add to shopping cart function
-				}
-				else
-				{
-					System.out.print("Invalid Number, try again.");
-				}
-				showReadables();
-			}
-			else if (userInput == eBook[i].sNo)
-			{
-				System.out.print("Enter the amount: ");
-				int amountAdded = reader.nextInt();
-				if (amountAdded > 0 && amountAdded < eBook[i].quantity)
-				{
-					System.out.print(eBook[i].name +" added to shopping cart");
-					eBook[i].changeQuantity(amountAdded);
-					//add to shopping cart function
-				}
-				else
-				{
-					System.out.print("Invalid Number, try again.");
-				}
-				showReadables();
-			}
-			else if (userInput == -1)
-			{
-				categoryMenu();
-			}
-			else
-			{
-				System.out.print("Unsupported input");
-				showReadables();// might need another function for this whole part for ease of use
-			}
-		}
 	}
 	public void showAudioProducts()
 	{
-		System.out.print("S.No   Name          Artist   Price($)  Quantity  Type");
-		for(int i = 0; i < cd.length; i++)
+		System.out.print("S.No   Name          Artist   Price($)  Quantity  Type\n");
+		for(int i = 0; i< cd.length; i++)
 		{
-			System.out.print(cd[i].getInfo() + "       CD\n");
+			if (cd[i].sNo != 0)
+			{
+				System.out.print(cd[i].getInfo() + "       CD\n");
+			}
 		}
 		for(int i = 0; i< mp3.length; i++)
 		{
-			System.out.print(mp3[i].getInfo() + "       MP3\n");
-		}
-		System.out.print("\nEnter Command: ");
-		System.out.print("Press -1 to go back");
-		int userInput = reader.nextInt();
-		
-		
-		for(int i = 0; i<cd.length;i++)
-		{
-			if (userInput == cd[i].sNo)
+			if (mp3[i].sNo != 0)
 			{
-				System.out.print("Enter the amount: ");
-				int amountAdded = reader.nextInt();
-				if (amountAdded > 0 && amountAdded <cd[i].quantity)
-				{
-					System.out.print(cd[i].name +" added to shopping cart\n");
-					cd[i].changeQuantity(amountAdded);
-					//add to shopping cart function
-				}
-				else
-				{
-					System.out.print("Invalid Number, try again.");
-				}
-				showAudioProducts();
-			}
-			else if (userInput == mp3[i].sNo)
-			{
-				System.out.print("Enter the amount: ");
-				int amountAdded = reader.nextInt();
-				if (amountAdded > 0 && amountAdded < mp3[i].quantity)
-				{
-					System.out.print(mp3[i].name +" added to shopping cart");
-					mp3[i].changeQuantity(amountAdded);
-					//add to shopping cart function
-				}
-				else
-				{
-					System.out.print("Invalid Number, try again.");
-				}
-				showAudioProducts();
-			}
-			else if (userInput == -1)
-			{
-				categoryMenu();
-			}
-			else
-			{
-				System.out.print("Unsupported input");
-				showAudioProducts();// might need another function for this whole part for ease of use
+				System.out.print(mp3[i].getInfo() + "       MP3\n");
 			}
 		}
+		getAudio();
+	}
+	
+	public void checkOut()
+	{
+		
 	}
 	
 	
